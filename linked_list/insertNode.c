@@ -1,18 +1,18 @@
-/* Insert a node in a linked list */
+/* Insert a listNode in a linked list */
 
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
 
-typedef struct node {
+typedef struct listNode {
 	int data;
-	struct node *next;
-	} node;
+	struct listNode *next;
+	} listNode;
 
-/* Inserts a new node at the beginning of a node */
-void push(node **head, int data) {
-	/* Create a new node */
-	node *newNode = (node *)malloc(sizeof(node));
+/* Inserts a new listNode at the beginning of a listNode */
+void push(listNode **head, int data) {
+	/* Create a new listNode */
+	listNode *newNode = (listNode *)malloc(sizeof(listNode));
 	
 	newNode->data = data;
 	newNode->next = *head;
@@ -20,27 +20,47 @@ void push(node **head, int data) {
 	*head = newNode;
 }
 
-/* Insert a new node at the end of the linked list */
-void append(node **head, int data) {
-	/* If the list is empty then the node should be inserted at the beginning */
+/* Insert a new listNode at the end of the linked list */
+void append(listNode **head, int data) {
+	/* If the list is empty then the listNode should be inserted at the beginning */
 	if (*head == NULL)
 		push(head,data);
 
 	else {
-		node *headRef = *head;
+		listNode *headRef = *head;
 		/* Traverse to the end of the linked list */
 		while(headRef->next != NULL) {
 			headRef = headRef->next;
 		}
-		node *newNode = (node *)malloc(sizeof(node));
+		listNode *newNode = (listNode *)malloc(sizeof(listNode));
 		newNode->data = data;
 		newNode->next = NULL;
-		/* Add the node at the end of the node */
+		/* Add the listNode at the end of the listNode */
 		headRef->next = newNode;
 	}
 }		
 
-int printList(node *head) {
+int insertNode(listNode **head, int pos, int data) {
+	listNode *current = *head;
+	int i = 0;
+	while((i < pos - 2) && (current->next != NULL)) {
+		current = current->next;
+		++i;
+	}
+
+	/* There are not enough elements in linked list */
+	if(i != pos-2) {
+		return -1;
+	}
+
+	listNode *newNode = (listNode *)malloc(sizeof(listNode));
+	newNode->data = data;
+	newNode->next = current->next;
+	current->next = newNode;
+
+	return 0;
+}
+int printList(listNode *head) {
 	if(head == NULL)
 		return -1;
 
@@ -54,12 +74,17 @@ int printList(node *head) {
 }
 
 int main() {
-	node *head = NULL;
-
-	append(&head,1);
-	append(&head,2);
-	append(&head,3);
-	append(&head,4);
+	int i = 0;
+	listNode *head = NULL;
+	
+	for(i=0;i<10;i++)
+		//append(&head,i);
+		push(&head,i);
+	
+	/*if(insertNode(&head,12,15) == -1) {
+		printf("Can't insert listNode\n");
+		return -1;
+	}*/
 
 	printList(head);
 
