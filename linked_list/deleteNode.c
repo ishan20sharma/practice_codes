@@ -23,6 +23,7 @@ void push(listNode **head, int data) {
 	*head = newNode;
 }
 
+/* Deletes a node identified using the key value */
 int deleteNode(listNode **head, int key) {
 	listNode *current = *head;
 	
@@ -30,20 +31,24 @@ int deleteNode(listNode **head, int key) {
 	if(*head == NULL)
 		return -1;	
 	
+	/* Check if the first node contains the key */
 	if((*head)->data == key) {
 		listNode *temp = *head;
 		*head = (*head)->next;
 		free(temp);
 		return 0;
 	}
-
+	
+	/* Traverse the linked list to locate the element to be deleted */
 	while(current->next != NULL && current->next->data != key) {
 		current = current->next;
 	}	
 
+	/* The list does not contain the node to be deleted */
 	if(current->next == NULL)
 		return -2;
-	printf("Deleting a node\n");
+
+	/* Delete the node from the list */
 	if(current->next->data == key) {
 		listNode *temp = current->next;
 		current->next = current->next->next;
@@ -70,7 +75,7 @@ int main() {
 	for(i=0; i < 10; i++)
 		push(&head,i);
 
-	if(deleteNode(&head,13) < 0) {
+	if(deleteNode(&head,7) < 0) {
 		printf("Can't delete the element\n");
 		return 0;
 	}
