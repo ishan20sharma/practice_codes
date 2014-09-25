@@ -32,6 +32,13 @@ int printList(listNode *head) {
 	}
 	return 0;
 }
+
+int printMiddle(listNode *head) {
+	if(head == NULL)
+		return -1;
+
+	
+}
 int main() {
 	listNode *head = NULL;
 	int i = 0;
