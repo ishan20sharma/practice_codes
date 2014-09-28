@@ -181,6 +181,11 @@ listNode *getNode(hashMap *hMap, int key) {
 	return NULL;
 }
 
+/* Modifies rhe value associated with a key */
+int modifyValue() {
+
+}
+
 /* Prints the Hash Map */
 int printHashMap(hashMap *hMap){
 	listNode *current;
