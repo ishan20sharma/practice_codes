@@ -14,7 +14,7 @@ typedef struct listNode {
 
 /* Represent a bucket of hashmap */
 typedef struct hashMapNode {
-	int bCount; /* Number of element in the bucket */
+	int bCount; /* Number of elements in the bucket */
 	listNode *head;
 }hashMapNode;
 
@@ -30,6 +30,7 @@ typedef struct hashMap {
 int hash(int key, int tSize) {
 	return key % tSize;
 }
+
 /* Creates a hash table */
 hashMap *createHashMap(int size) {
 	int i;
@@ -39,6 +40,7 @@ hashMap *createHashMap(int size) {
 
 	/* Check if the memory is allocated for the hashMap head or not */
 	if(!h) {
+		printf("Could not allocate memory for the hashmap\n");
 		return NULL;
 	}
 	
@@ -62,13 +64,14 @@ hashMap *createHashMap(int size) {
 
 /* Check if a key exists in the hashmap or not */
 int hashSearch(hashMap *hMap, int key) {
-	listNode *temp = (hMap->table[hash(key, hMap->tSize)]).head;
+	listNode *current = (hMap->table[hash(key, hMap->tSize)]).head;
 
-	while(temp) {
-		if(temp->key == key)
+	for(current; current; current = current->next) {
+		if(current->key == key)
 			return 1;
-		temp = temp->next;
 	}
+
+	printf("Key does not exist\n");
 	return 0;
 }
 
@@ -81,6 +84,10 @@ int hashInsert(hashMap *hMap, int key, int data) {
 
 	/* Create the list node to be inserted */
 	listNode *newNode = (listNode *)malloc(sizeof(listNode));
+	if(!newNode) {
+		printf("Could not create memory for new node\n");
+		return 0;
+	}
 	newNode->key = key;
 	newNode->data = data;
 
@@ -92,19 +99,22 @@ int hashInsert(hashMap *hMap, int key, int data) {
 	(hMap->table[index]).bCount++;
 
 	/* Increase the count of the number of the elements in the hashmap */
-	(hMap->eCount)++;
+	hMap->eCount++;
 
-	if(hMap->eCount/hMap->tSize > LOAD_FACTOR)
-		rehash(hMap);
-	
+	if(hMap->eCount/hMap->tSize > LOAD_FACTOR) {
+		if(rehash(hMap) == 0) {
+			printf("Could not rehash the hashmap\n");
+			return 0;
+		}
+	}
 	return 1;
 }
 
 /* Create a new hash table from the previous table */
 int rehash(hashMap *hMap){
 	int oldSize, i, index;
-	listNode *p, *temp, *temp2;
-	hashMapNode *oldTable;
+	listNode *temp = NULL, *temp2 = NULL;
+	hashMapNode *oldTable = NULL;
 
 	/* Save the old size and table */
 	oldSize = hMap->tSize;
@@ -116,43 +126,47 @@ int rehash(hashMap *hMap){
 
 	if(!hMap->table) {
 		printf("Could not create new table\n");
-		return -1;
+		return 0;
 	}
 	
 	/* Move the elements from the old hash table to the new hash table */
 	for(i=0; i<oldSize; i++) {
-		for(temp = oldTable[i].head; temp; temp = temp->next) {
-			/* Find an index in the new table */		
+		temp = oldTable[i].head;
+		while(temp) {
 			index = hash(temp->key, hMap->tSize);
-
-			/* Move the listNode from the old table to the new table */
 			temp2 = temp;
-			temp2->next = (hMap->table[i]).head;
-			(hMap->table[i]).head = temp2;
+	
+			temp = temp->next;
+
+			temp2->next = (hMap->table[index]).head;
+			(hMap->table[index]).head = temp2;
+			
 		}
 	}	
-
 	return 1;
 }
 
 /* Deletes a key from the hashMap */
 int deleteHashMap(hashMap *hMap, int key) {
-	int i = 0;
 	int index = hash(key, hMap->tSize);
 	listNode *prev = NULL;
 	listNode *current = NULL;
-	printf("deleting the key\n");
-	for(current = (hMap->table[i]).head;current; prev = current,current=current->next) {
-		printf("counting the linkedlist\n");
+	printf("deleting the key from bucket %d\n", index);
+	for(current = (hMap->table[index]).head; current; prev = current,current=current->next) {
+		printf("locating the key\n");
 		if(current->key == key) {
-			printf("deleting the key\n");
-			if(prev)	
+			printf("key located\n");
+			if(prev){	
 				prev->next = current->next;
-			printf("changed the prev node\n");
+				printf("changed the prev node\n");
+			}
 			free(current);
+			((hMap->table[index]).bCount)--;
+			hMap->eCount--;
 			return 1;
 		}
 	}
+	printf("Could not delete the element\n");
 	return 0;
 }
 
@@ -182,8 +196,16 @@ listNode *getNode(hashMap *hMap, int key) {
 }
 
 /* Modifies rhe value associated with a key */
-int modifyValue() {
-
+int modifyValue(hashMap *hMap,int key, int data) {
+	listNode *current = NULL;
+	int index = hash(key, hMap->tSize);
+	for(current = (hMap->table[index]).head; current; current = current->next) {
+		if(current->key == key) {
+			current->data = data;
+			return 1;
+		}
+	}
+	return 0;
 }
 
 /* Prints the Hash Map */
@@ -199,6 +221,7 @@ int printHashMap(hashMap *hMap){
 		}
 		printf("\n");
 	}	
+	printf("eCount is %d\ntSize is %d\nValue of eCount/tSize is %d\n", hMap->eCount, hMap->tSize,hMap->eCount/hMap->tSize);
 }
 
 int main() {
@@ -214,24 +237,30 @@ int main() {
 	int i = 0;
 	for(i; i< 1000; i++)
 		hashInsert(hMap,i,i);
-
+	printf("Completed hashMap is\n");
 	printHashMap(hMap);
 
-	printf("Value associated with key 840 is %d\n",getValue(hMap,840));
+/*	printf("Value associated with key 840 is %d\n",getValue(hMap,840));
 
 	increment = getNode(hMap,840);
-	increment->data = increment->data+1;
+	modifyValue(hMap, 840, 16);
+	//increment->data = increment->data+1;
 	printf("Value associated with key 840 is %d\n",getValue(hMap,840));
 	
+*/	
+	/* Check deleteHashMap 
+	if(deleteHashMap(hMap,1006))
+		printHashMap(hMap);
+	else
+		printf("No key available to be deleted\n"); */
 	
-	deleteHashMap(hMap,841);
-	printHashMap(hMap);
-	
-	/*if(hashInsert(hMap, 15, 53))
+	/*if(hashInsert(hMap, 15, 53)) {
 		printf("Key inserted\n");
+		printHashMap(hMap);
+	} */
 
-	if(hashSearch(hMap, 15))
-		printf("Key Present\n");*/
+	if(hashSearch(hMap, 5))
+		printf("Key Present\n");
 
 	return 0;
 }
