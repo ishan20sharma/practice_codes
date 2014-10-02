@@ -116,6 +116,23 @@ int singlyll::insertAt(int index, int data) {
 	return 0;
 }
 
+int singlyll::printMiddle() {
+	ListNode *slow = head, *fast = head;
+
+	if(head == NULL) {
+		cout << "list is empty" << endl;
+		return 0;
+	}
+
+	while(fast && fast->next) {
+		slow = slow->next;
+		fast = fast->next->next;
+	}
+	cout << "Middle element is: " << slow->data << endl;
+
+	return 1;
+}
+
 /* Prints the singly linked list */
 int singlyll::printList() {
 	ListNode *current = head;
@@ -140,9 +157,10 @@ int main() {
 		//list.insertHead(i);
 		list.insertEnd(i);
 	}
-	list.insertAt(56,16);
+	list.printMiddle();
+	//list.insertAt(56,16);
 
-	list.printList();
+	//list.printList();
 
 	return 0;
 }
