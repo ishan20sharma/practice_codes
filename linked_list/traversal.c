@@ -18,7 +18,7 @@ int traverseList(node *head) {
 		return -1;
 
 	else {
-		while(head->next != NULL) {
+		while(head != NULL) {
 			printf("Data is %d\n", head->data);
 			head = head->next;
 		}
