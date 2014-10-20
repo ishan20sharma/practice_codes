@@ -1,5 +1,6 @@
 #include<iostream>
 #include<cstdlib>
+#include<queue>
 
 using namespace std;
 
@@ -29,22 +30,33 @@ class BinaryTree {
 	void insertEnd(ListNode **head, ListNode **tail, int data);
 	void printPath(ListNode *head);
 	bool auxHasPathSum(TreeNode *node, int sum);
+	void auxDeleteTree(TreeNode *node);
+	int auxGetSize(TreeNode *node);
 public:
 	BinaryTree();
-	int printTree();
-	int printInOrder();
-	int printPostOrder();
-	int printPreOrder();
-	void insert(int data);
-	void insert(TreeNode *newNode);
-	bool isEmpty();
-	TreeNode *createNode(int data); /* Creates a new tree node */
-	TreeNode *getRoot(); /* Returns the value stored in TreeNode *root member */
-	bool identicalTrees(BinaryTree &tree); /* Given two trees, determine if they are identical or not */
-	unsigned int getMaxDepth(); /* Returns the maximum depth or height of the tree */
-	TreeNode *createMirror(); /* Returns a Mirror Tree */
-	void printRootLeafPath(); /* Prints the path from root node to leaf node */
-	bool hasPathSum(int sum); /* Determines whether a path exists which has the given sum */
+	int printTree();                           /* Prints the tree : done */
+	int printInOrder();                        /* Prints the tree in InOrder fashion : done */
+	int printPostOrder();                      /* Prints the tree in PostOrder fashion : done */
+	int printPreOrder();                       /* Prints the tree in PreOrder fashion : done */
+	void printLevelOrder();                    /* Prints the tree in LevelOrder fashion : done */
+	void insert(int data);                     /* Inserts a node with the given data value : done */
+	void insert(TreeNode *newNode);            /* Inserts a given node : done */
+	void deleteElement(const int& value);      /* Deletes the node with the given value */
+	void deleteTree();			   /* Deletes the binary tree : done */
+	bool isEmpty();                            /* Checks whether the tree is empty : done */
+	TreeNode *createNode(int data);            /* Creates a new tree node : done */
+	int getSize();				   /* Returns the size (i.e number of nodes in the tree) */
+	TreeNode *getRoot();                       /* Returns the value stored in TreeNode *root member variable : done */
+	bool identicalTrees(BinaryTree &tree);     /* Given two trees, determine if they are identical or not : done */
+	unsigned int getMaxDepth();                /* Returns the maximum depth or height of the tree : done */
+	int getDeepestNode();                      /* Returns the value of the deepest node in the tree */
+	int getNoOfLeaves();	                   /* Returns the number of leaves */
+	int getNoOfFullNodes();                    /* Returns the number of full nodes (nodes with both left and right children) in a tree */
+	int getNoOfHalfNodes();                    /* Returns the number of half nodes (nodes with either left or right child but not both) */
+	int getDiameter();			   /* Returns the diameter/Width ( Number of nodes on the longest path between two leaves) */
+	TreeNode *createMirror();                  /* Returns a Mirror Tree : done */
+	void printRootLeafPath();                  /* Prints the path from root node to leaf node : done */
+	bool hasPathSum(int sum);                  /* Determines whether a path exists which has the given sum : done */
 };
 
 /* Default Constructor */
@@ -180,6 +192,74 @@ void BinaryTree::auxPrintPreOrder(TreeNode *current) {
 	}
 }
 
+/* Prints the tree in level order fashion */
+void BinaryTree::printLevelOrder() {
+	queue<TreeNode *> q;
+	
+	/* If the tree is empty there is nothing to traverse */
+	if (isEmpty()) {
+		cout << "Tree is empty" << endl;
+		return;
+	}
+	
+	cout << "Printing the tree in level order fasion" << endl;
+
+	/* Add the root node in the tree */
+	q.push(root);
+
+	/* Iterate through all the elements of the queue */
+	while(!q.empty()) {
+		TreeNode *current = q.front();
+
+		/* Print the first queue element */
+		cout << current->data << endl;
+
+		/* Delete the element from the queue as it has been traversed */
+		q.pop();
+
+		/* Add the left and right children of the element in the queue */
+		if(current->left != NULL) {
+			q.push(current->left);
+		}
+		
+		if(current->right != NULL) {
+			q.push(current->right);
+		}
+	}
+}
+
+/* Returns the size of the binary tree */
+int BinaryTree::getSize() {
+	cout << "Calculating the size of the binary tree" << endl;
+	return auxGetSize(root);
+}
+
+int BinaryTree::auxGetSize(TreeNode *node) {
+	if(node == NULL)
+		return 0;
+
+	else 
+		return 1 + auxGetSize(node->left) + auxGetSize(node->right);
+}
+
+/* Deletes the binary tree */
+void BinaryTree::deleteTree() {
+	cout << "Deleting the binary tree" << endl;
+
+	auxDeleteTree(root);
+	root = NULL;
+}
+
+void BinaryTree::auxDeleteTree(TreeNode *node) {
+	/* If the node is NULL then there is nothing to delete */
+	if(node == NULL)
+		return;
+
+	/* Delete the tree in postorder fashion */
+	auxDeleteTree(node->left);
+	auxDeleteTree(node->right);
+	delete node;
+}
 
 /* Determines if two trees are identical or not */
 bool BinaryTree::identicalTrees(BinaryTree &tree) {
@@ -334,6 +414,7 @@ int main() {
 	tree1.insert(25);
 	tree1.insert(35);
 
+	
 	/* Creates a second BST */
 	/*tree2.insert(20);
         tree2.insert(10);
@@ -360,19 +441,23 @@ int main() {
 		tree2.insert(i);
 	}*/
 	
+	cout << "Size of the tree is " << tree1.getSize() << endl;
 	//tree1.printRootLeafPath();
 
 	//tree1.createMirror();
+
+	//tree1.deleteTree();
 
 	/* Tree traversal */
 	//tree1.printInOrder();	
 	//tree1.printPostOrder();
 	//tree1.printPreOrder();
-	
-	if(tree1.hasPathSum(36))
+	//tree1.printLevelOrder();	
+
+	/*if(tree1.hasPathSum(36))
 		cout << "Path exists" << endl;
 	else
-		cout << "Path doesn't exist" << endl;	
+		cout << "Path doesn't exist" << endl;*/	
 
 	//cout << "The maximum depth of the tree is: " << tree1.getMaxDepth() << endl;
 	
