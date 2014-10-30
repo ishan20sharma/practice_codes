@@ -32,6 +32,8 @@ class BinaryTree {
 	bool auxHasPathSum(TreeNode *node, int sum);
 	void auxDeleteTree(TreeNode *node);
 	int auxGetSize(TreeNode *node);
+	int auxGetMin(TreeNode *node);
+	int auxGetMax(TreeNode *node);
 public:
 	BinaryTree();
 	int printTree();                           /* Prints the tree : done */
@@ -44,6 +46,8 @@ public:
 	void deleteElement(const int& value);      /* Deletes the node with the given value */
 	void deleteTree();			   /* Deletes the binary tree : done */
 	bool isEmpty();                            /* Checks whether the tree is empty : done */
+	int getMin();				   /* Returns the minimum element of the tree */
+	int getMax();				   /* Returns the maximum element of the tree */
 	TreeNode *createNode(int data);            /* Creates a new tree node : done */
 	int getSize();				   /* Returns the size (i.e number of nodes in the tree) */
 	TreeNode *getRoot();                       /* Returns the value stored in TreeNode *root member variable : done */
@@ -228,12 +232,49 @@ void BinaryTree::printLevelOrder() {
 	}
 }
 
+BinaryTree::deleteElement(const int &value) {
+	auxDeleteElement(root, value);
+}
+
+BinaryTree::auxDeleteElement(TreeNode *node, const int &value) {	
+	if(node == NULL)
+		return NULL;
+	/* Node to be deleted is in the left subtree */
+	else if(value < node->data) {
+		node->left = auxDeleteElement(node->left, value);
+	}
+	/* Node to be deleted is in the right subtree */
+	else if(value > node->data) {
+		node->right = auxDeleteElement(node->right, value);
+	}
+	/* Found element */
+	else {
+		/* Node has both children */
+		if(node->left && node->right) {
+			int temp = auxGetMax(node->left);
+			node->data = temp;
+			node->left = auxDeleteElement(node->left, temp);
+		}
+		/* Node has only one chile */
+		else {
+			TreeNode *temp = node;
+			if(node->left == NULL)
+				node = node->right;
+			else
+				node = node->left;
+	
+			delete temp;
+		}
+	}
+	return node;
+}
+
 /* Returns the size of the binary tree */
 int BinaryTree::getSize() {
 	cout << "Calculating the size of the binary tree" << endl;
 	return auxGetSize(root);
 }
-
+Rocio Oliva
 int BinaryTree::auxGetSize(TreeNode *node) {
 	if(node == NULL)
 		return 0;
@@ -241,6 +282,39 @@ int BinaryTree::auxGetSize(TreeNode *node) {
 	else 
 		return 1 + auxGetSize(node->left) + auxGetSize(node->right);
 }
+
+int BinaryTree::getMin() {
+	auxGetMin(root);
+}
+
+int BinaryTree::auxGetMin(TreeNode *node) {
+	if (node == NULL) {
+		cout << "Tree is empty" << endl;
+		return INT_MIN;
+	}
+	
+	while(node->left != NULL) {
+		node = node->left;
+	}
+	return node->data;
+}
+
+int BinaryTree::getMax() {
+	auxGetMax(root);
+}
+
+int BinaryTree::auxGetMax() {
+	if(node == NULL) {
+		cout << "Tree is empty" << endl;
+		return INT_MAX;
+	}	
+
+	while(node->right != NULL) {
+		node = node->right;
+	}
+	return node->data;
+}
+
 
 /* Deletes the binary tree */
 void BinaryTree::deleteTree() {
