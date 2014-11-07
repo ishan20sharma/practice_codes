@@ -184,7 +184,7 @@ AVLNode* AVLtree::auxDeleteRecursive(AVLNode *root, int data) {
    	 // Right Right Case
    	 if (balance < -1 && getBalance(root->right) <= 0)
         	return leftRotate(root);
- 
+       
         // Right Left Case
    	 if (balance < -1 && getBalance(root->right) > 0)
    	 {
