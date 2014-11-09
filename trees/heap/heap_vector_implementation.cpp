@@ -7,9 +7,9 @@ using namespace std;
 template<typename T>
 class Heap {
 	vector<T> heap; /* Stores the heap elements */
-	int left(const int &parent) const;
-	int right(const int &parent) const; 
-	int parent(const int &child) const;
+	int left(const int &parent) const; /* Returns the left child of an element */
+	int right(const int &parent) const; /* Returns the right child of an element */
+	int parent(const int &child) const; /* Returns the parent of an element */
 
 	/* Functions for max-heap */
 	void maxHeapifyUp(int child);
