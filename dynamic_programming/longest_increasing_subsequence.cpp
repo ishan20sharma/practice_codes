@@ -7,8 +7,8 @@ using namespace std;
 
 void longestIncreasingSubsequence(int sequence[], int length) {
 	vector<int> lis;
-	int lisValue; /* The length of LIS */
-	int lisIndex; /* The index where LIS ends */
+	int lisValue = 0; /* The length of LIS */
+	int lisIndex = -1; /* The index where LIS ends */
 
 	lis.push_back(1); /* The longest increasing sequence starts with sequenc[0] */
 
@@ -32,7 +32,7 @@ void longestIncreasingSubsequence(int sequence[], int length) {
 }
 
 int main() {
-	int sequence[] = {9, 11, 2, 13, 7, 15};
+	int sequence[] = {9, 11, 2, 13, 7, 15}; /* Answer should be 4 */
 	
 	longestIncreasingSubsequence(sequence, sizeof(sequence)/sizeof(sequence[0]));
 	
