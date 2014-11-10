@@ -14,13 +14,22 @@ void rodCut(int price[], int logSize) {
 
 	bPrice.push_back(0);
 
-	for(int i = 1; i <= logSize; i++) {
+	/*for(int i = 1; i <= logSize; i++) {
 		int maxVal = INT_MIN;
 
 		for(int j = 0; j < i; j++) {
 			maxVal = max(maxVal, price[j] + bPrice[i - j - 1] );
 		}
 		bPrice.push_back(maxVal);
+	} */
+
+	for(int i = 1; i <= logSize; ++i) {
+		bPrice.push_back(INT_MIN);
+		for(int j = 0; j < i; ++j) {
+			if(bPrice[i] < price[j] + bPrice[i - j - 1]) {
+				bPrice[i] = price[j] + bPrice[i - j - 1];
+			}
+		}
 	}
 
 	cout << "The maximum price we can get for log of size " << logSize << " is : " << bPrice[logSize] << endl;
