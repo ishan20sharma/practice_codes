@@ -22,8 +22,8 @@ Output: 5 (A Longest Bitonic Subsequence of length 5 is 80, 60, 30, 20, 10)
 using namespace std;
 
 void longestBitonicSubsequence(int sequence[], int length) {
-	vector<int> lis(length, 1);
-	vector<int> lds(length, 1);
+	vector<int> lis(length, 1); /* Stores the value for longest increasing subsequence */
+	vector<int> lds(length, 1); /* Stores the value for longest decreasing subsequence */
 
 	cout << "Computing the longest increasing subsequence array"  << endl;
 	for(int i = 1; i < length; ++i) {
