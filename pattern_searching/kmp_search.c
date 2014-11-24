@@ -51,7 +51,7 @@ void buildTable(char *table, char *pattern, int size)
 	table[0] = -1;
 	table[1] = 0;
 
-	while( i < size)
+	while( i <= size)
 	{	
 		if(pattern[i-1] == pattern[cnd])
 		{
@@ -76,20 +76,22 @@ void buildTable(char *table, char *pattern, int size)
 void main()
 {
 	char text[] = "AABAACAADAABAAABAA";
-	char pattern[] = "AABA";
-	
+	//char pattern[] = "AABA";
+	char pattern[] = "AAACAAAAAC";
+
 	int size = strlen(pattern);
 
-	char table[size];
+	char table[size+1];
 
 	buildTable(table, pattern, size);
 	
 	/* prints the table */
 	int i=0;
-	for(i;i<size;i++)
+	for(i;i<=size;i++)
 	{
-		printf("%d\t",table[i]);
+		printf("%d | ",table[i]);
 	}
+	printf("\n");
 
-	search(table,text,pattern,strlen(text),strlen(pattern));
+	//search(table,text,pattern,strlen(text),strlen(pattern));
 }
