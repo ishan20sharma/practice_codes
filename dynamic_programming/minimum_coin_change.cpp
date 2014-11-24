@@ -1,3 +1,7 @@
+/*
+Given a set of coin denominations (V1 = 1, V2, V3, ..., Vn) and an amount of money (C). Make change for the given amount of money using a minimum number of coins.
+*/
+
 #include<iostream>
 #include<vector>
 #include<climits>
